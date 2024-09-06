@@ -9,7 +9,9 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
 // API route example
 app.get('/api/hello', (req, res) => {
