@@ -1,24 +1,27 @@
 const express = require('express');
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Middleware to parse JSON data
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
-
-// Middleware to parse URL-encoded data
 app.use(express.urlencoded({ extended: true }));
 
-
-// Serve static files from the React app
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
+// Enable CORS
+app.use(cors());
 
 // API route example
 app.get('/api/hello', (req, res) => {
     res.json({ message: 'Hello from the server!' });
 });
 
-// The "catchall" handler: for any request that doesn't match the above, send back the React app's index.html file.
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Catch-all handler for unmatched routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
@@ -26,9 +29,3 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-const cors = require('cors');
-app.use(cors());
-
-require('dotenv').config();
-
